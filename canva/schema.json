@@ -1,0 +1,18 @@
+{
+  "type": "component",
+  "metadata": {},
+  "schema": {
+    "name": "canva",
+    "friendlyName": "canva",
+    "description": "canva de cadastre",
+    "icon": "Text",
+    "settings": [
+      {
+        "type": "text",
+        "key": "imageUrl",
+        "label": "image URL",
+        "defaultValue": "https://placekitten.com/640/360"
+      }
+    ]
+  }
+}
