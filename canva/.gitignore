@@ -1,4 +1,5 @@
 # Logs
+/testFields
 logs
 *.log
 npm-debug.log*
