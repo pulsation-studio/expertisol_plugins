@@ -1,0 +1,51 @@
+{
+  "type": "component",
+  "metadata": {},
+  "schema": {
+    "name": "canva",
+    "friendlyName": "canva",
+    "description": "canva de cadastre",
+    "icon": "Text",
+    "settings": [
+      {
+        "type": "text",
+        "key": "imageUrl",
+        "label": "image URL",
+        "defaultValue": "https://placekitten.com/640/360"
+      },
+      {
+        "type": "dataSource/s3",
+        "label": "DATASOURCE",
+        "key": "field",
+        "required": true
+      },
+      {
+        "type": "text",
+        "label": "Label",
+        "key": "label"
+      },
+      {
+        "type": "object",
+        "properties": {
+          "accessKeyId": {
+            "type": "string",
+            "title": "Access Key ID"
+          },
+          "secretAccessKey": {
+            "type": "string",
+            "title": "Secret Access Key"
+          },
+          "region": {
+            "type": "string",
+            "title": "Region"
+          },
+          "bucket": {
+            "type": "string",
+            "title": "Bucket Name"
+          }
+        }
+      }
+
+    ]
+  }
+}
