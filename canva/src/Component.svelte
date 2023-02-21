@@ -1,11 +1,49 @@
 <script>
-    import {getContext, onMount} from "svelte"
+    import {getContext, onMount, onDestroy} from "svelte"
 
     export let imageUrl
+    export let field
+    export let label
+
+
+    let imgToUpload;
+    let showModal = false;
+    let indexPoint = 0;
 
     const {styleable} = getContext("sdk")
     const component = getContext("component")
     let canvas;
+
+    //------------------ field part ------------------------
+    const formContext = getContext("form");
+    const formStepContext = getContext("form-step");
+    const fieldGroupContext = getContext("field-group");
+
+    let fieldApi;
+    let fieldState;
+
+    const formApi = formContext?.formApi;
+    const labelPos = fieldGroupContext?.labelPosition || "above";
+    $: formStep = formStepContext ? $formStepContext || 1 : 1;
+    $: formField = formApi?.registerField(
+        field,
+        "s3upload",
+        0,
+        false,
+        null,
+        formStep
+    );
+    $: unsubscribe = formField?.subscribe((value) => {
+        fieldState = value?.fieldState;
+        fieldApi = value?.fieldApi;
+    });
+    $: labelClass =
+        labelPos === "above" ? "" : `spectrum-FieldLabel--${labelPos}`;
+    onDestroy(() => {
+        fieldApi?.deregister();
+        unsubscribe?.();
+    });
+    //------------------------------------------------------
 
     let infosPoints = [
         {
@@ -95,12 +133,12 @@
             majPositionImage();
         }
         canvas.addEventListener('mousedown', (e) => onPointerDown(e));
-        canvas.addEventListener('touchstart', (e) => handleTouch(e));
+        //canvas.addEventListener('touchstart', (e) => handleTouch(e));
         canvas.addEventListener('mouseup', (e) => onPointerUp(e));
-        canvas.addEventListener('touchend', (e) => handleTouch(e))
+        //canvas.addEventListener('touchend', (e) => handleTouch(e))
         canvas.addEventListener('mousemove', (e) => onPointerMove(e))
-        canvas.addEventListener('touchmove', (e) => handleTouch(e))
-        canvas.addEventListener('wheel', (e) => adjustZoom(e.deltaY * SCROLL_SENSITIVITY, null))
+        //canvas.addEventListener('touchmove', (e) => handleTouch(e))
+        //canvas.addEventListener('wheel', (e) => adjustZoom(e.deltaY * SCROLL_SENSITIVITY, null))
     });
 
     function majPositionImage() {
@@ -113,23 +151,23 @@
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.drawImage(img, cameraOffset.x, cameraOffset.y);
 
-        let i =0;
-        for(let point of pointsEnregistres){
-            ctx.drawImage(point.image, point.x + cameraOffset.x, point.y + cameraOffset.y, taillePoint.width ,taillePoint.height);        // FILL THE CANVAS WITH THE IMAGE.
+        let i = 0;
+        for (let point of pointsEnregistres) {
+            ctx.drawImage(point.image, point.x + cameraOffset.x, point.y + cameraOffset.y, taillePoint.width, taillePoint.height);        // FILL THE CANVAS WITH THE IMAGE.
 
             //affichage de la légende
             //création de la légende
-            let coord_x = point.x + cameraOffset.x +taillePoint.width;
+            let coord_x = point.x + cameraOffset.x + taillePoint.width;
             let coord_y = point.y + cameraOffset.y;
             ctx.font = '20px arial';
             ctx.fillStyle = "black";
             let texte = getNomPoint(i);
-            ctx.fillText(texte,  coord_x, coord_y); //this.infosPoints[type].diminutif + this.getNumeroPoint()
+            ctx.fillText(texte, coord_x, coord_y); //this.infosPoints[type].diminutif + this.getNumeroPoint()
             i++;
         }
 
-        for(let trace of tracesEnregistres){
-            for(let point of trace){
+        for (let trace of tracesEnregistres) {
+            for (let point of trace) {
 
                 let coord_x = point.x + cameraOffset.x;
                 let coord_y = point.y + cameraOffset.y;
@@ -142,7 +180,6 @@
         ctx.translate(window.innerWidth / 2, window.innerHeight / 2)
         ctx.scale(cameraZoom, cameraZoom)
         ctx.translate(-window.innerWidth / 2 + cameraOffset.x, -window.innerHeight / 2 + cameraOffset.y)
-
     }
 
     function getEventLocation(e) {
@@ -250,7 +287,8 @@
 
         //Ajout de l'image
         let image = new Image();
-        image.src = "https://placekitten.com/640/360";//"assets/icones-ope/" + infosPoints[type].image;
+        image.src = "https://placekitten.com/640/360";//"src/icones-ope/" + infosPoints[type].image;
+        image.crossOrigin = "anonymous";
         image.onload = () => {
             //this.canvas.nativeElement.width = img.width;
             //this.canvas.nativeElement.height = img.height;
@@ -262,7 +300,6 @@
             };
 
 
-            console.log(point);
             pointsEnregistres.push(point);
             selectionPoint = 0;
             majPositionImage();
@@ -285,16 +322,16 @@
         }
 
         // gestion du dragging
-        else if (isDragging) {
+        /*else if (isDragging) {
             //console.log("dragging");
             cameraOffset.x = getEventLocation(e).x / cameraZoom - dragStart.x;
             cameraOffset.y = getEventLocation(e).y / cameraZoom - dragStart.y;
 
             majPositionImage();
-        }
+        }*/
     }
 
-    function handleTouch(e) {
+    /*function handleTouch(e) {
         //console.log("handletouch");
 
 
@@ -313,9 +350,9 @@
             handlePinch(e)
         }
         majPositionImage();
-    }
+    }*/
 
-    function handlePinch(e) {
+    /*function handlePinch(e) {
         //console.log("handlepinch");
         e.preventDefault()
 
@@ -331,9 +368,9 @@
             adjustZoom(null, initialPinchDistance / currentDistance)
         }
         majPositionImage();
-    }
+    }*/
 
-    function adjustZoom(zoomAmount, zoomFactor) {
+    /*function adjustZoom(zoomAmount, zoomFactor) {
         //console.log("adjustzoom");
         if (!isDragging) {
             if (zoomAmount) {
@@ -349,7 +386,7 @@
             //console.log(zoomAmount)
         }
         majPositionImage();
-    }
+    }*/
 
     function afficherModal() {
         return ""//this.outilsService.afficherModal();
@@ -360,7 +397,7 @@
     }
 
     function clickAfficherModal(id) {
-        return ""//this.outilsService.clickAfficherModal(id);
+        showModal = true;
     }
 
     function annulerSuppressionPoint() {
@@ -370,8 +407,9 @@
 
     function supprimerPoint(index) {
         pointsEnregistres.splice(index, 1);
+        showModal = false;
         majPositionImage();
-        clickAfficherModal('modifier-point');
+        //clickAfficherModal('modifier-point');
     }
 
     function getNomPoint(index) {
@@ -392,69 +430,227 @@
         //console.log(count);
         return count;
     }
-    function choixPrelevement(index){
+
+    function choixPrelevement(index) {
         console.log("touché");
         selectionPoint = index;
-        if(infosPoints[index]['role'] !== undefined){
-            if(infosPoints[index]['role'] === 'trace'){
-                traceLibre=true;
+        if (infosPoints[index]['role'] !== undefined) {
+            if (infosPoints[index]['role'] === 'trace') {
+                traceLibre = true;
             }
-        }else{
-            console.log("trace avant click"+traceLibre);
-            traceLibre=false;
-            console.log("trace après click"+traceLibre);
+        } else {
+            traceLibre = false;
         }
+    }
+
+    function enregistrerImg() {
+        let img = new Image();
+        img.src = canvas.toDataURL();
+        imgToUpload = img;
+        console.log(imgToUpload);
+    }
+
+    function enregistrerProjet() {
+
+        //ajout des données de points
+        /*let prelevements = [];
+        for(let point of pointsEnregistres){
+            let temp = {
+                type: point.type,
+                x: point.x,
+                y: point.y
+            }
+            prelevements.push(temp);
+        }
+        projet['ope']['prelevements']=prelevements;
+
+        projet['ope']['traces']=this.tracesEnregistres;
+
+        let myImage = this.canvas.nativeElement.toDataURL("image/png");
+        //console.log(myImage);
+        let nomPlanOpe: string = this.donneesService.nomPlanOpe;
+        let roleOpeEdite = "Plan opé édité";
+        let file: File=this.outilsService.dataURLtoFile(myImage,nomPlanOpe);
+        //console.log(file);
+
+
+        //enregistrement des paramètres opé :
+        this.majPlanOpeDt(nomPlanOpe, roleOpeEdite);
+        //enregistrement des paramètres de prise de vue
+        this.projet['ope']['parametresPlan'] = {
+            cameraOffset: this.cameraOffset,
+            cameraZoom: this.cameraZoom
+        };
+        let projetStatut: any = this.donneesService.checkStatut(this.projet);
+
+        //préparation des requêtes à envoyer
+        let tableauRequetes: any[] = []
+
+        //document du nouveau plan opé
+
+        this.donneesService.envoyerDoc(file,this._id,'dt').subscribe(
+            (data) => {
+                console.log("enregistrement plan opé", data);
+                this.outilsService.spinnerOff();
+            }, (error) => {
+                console.log("erreur lors de l'enregistrement du plan opé", error);
+                this.outilsService.spinnerOff();
+            }
+        );
+
+        this.donneesService.modifierProjet(projetStatut).subscribe(
+            (data) => {
+                console.log("enregistrement projet", data);
+                this.outilsService.spinnerOff();
+            }, (error) => {
+                console.log("erreur lors de l'enregistrement du plan opé", error);
+                this.outilsService.spinnerOff();
+            }
+        );*/
+
     }
 
 </script>
 
-<div class="component" use:styleable={$component.styles}>
-    <div class="icons">
-        {#each infosPoints as icon, index}
-            <div on:click={() => choixPrelevement(index)} class="container-icons">
-                <div>
-                    <img src="{imageUrl}" alt="icon" class="image" style="height:32px;width:32px;">
-                </div>
-
-                <div class="text-container">
-                    <span>{icon['nom']}</span>
+<div class="component spectrum-Form-item" use:styleable={$component.styles}>
+    {#if !formContext}
+        <div class="placeholder">Form components need to be wrapped in a form</div>
+    {:else}
+        {#if (showModal)}
+            <div class="modal">
+                <div class="modal-content">
+                    <div class="text-modal-div">
+                        <p>Point {getNomPoint(pointTouche)}</p>
+                    </div>
+                    <div class="buttons-modal-div">
+                        <button class="supprimer" on:click={() => supprimerPoint(pointTouche)}>supprimer point</button>
+                        <button class="go-back" on:click={() => showModal=false}>revenir en arrière</button>
+                    </div>
                 </div>
             </div>
-        {/each}
+        {/if}
+        <label
+                class:hidden={!label}
+                for={fieldState?.fieldId}
+                class={`spectrum-FieldLabel spectrum-FieldLabel--sizeM spectrum-Form-itemLabel ${labelClass}`}
+        >
+            {label || " "}
+        </label>
+        <div class="icons">
+            {#each infosPoints as icon, index}
+                <div on:click={() => choixPrelevement(index)}
+                     class="container-icons {selectionPoint === index? 'selected': ''}">
+                    <div>
+                        <img src="{imageUrl}" alt="icon" class="image" style="height:32px;width:32px;">
+                    </div>
+                    <div class="text-container">
+                        <span>{icon['nom']}</span>
+                    </div>
+                </div>
+            {/each}
+            <button class="enregistrer-button" on:click={() => enregistrerImg()}>Enregistrer modifications</button>
+        </div>
+
+
+        <canvas bind:this={canvas}/>
+    {/if}
+    {#if imgToUpload}
+    <div>
+        <img src={imgToUpload.src}>
     </div>
-
-
-    <canvas bind:this={canvas}/>
+        {/if}
 </div>
 
 <style>
-    canvas{
+    label{
+        width: 100%;
+        white-space: nowrap;
+    }
+    .placeholder {
+        color: var(--spectrum-global-color-gray-600);
+    }
+
+    .modal {
+        background-color: black;
+        position: fixed;
+        z-index: 40;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        background-color: white;
+        border-radius: 16px;
+        display: flex;
+        flex-flow: wrap column;
+        width: 25%;
+    }
+
+    .text-modal-div {
+        text-align: start;
+        font-size: 16px;
+        margin-left: 5px;
+    }
+
+    .buttons-modal-div {
+        display: flex;
+        flex-flow: row wrap;
+        margin-left: 5px;
+        margin-bottom: 5px;
+    }
+
+    .supprimer {
+        background-color: orange;
+        color: white;
+        border-radius: 32px;
+        margin: 2px;
+        padding: 2px;
+    }
+
+    .go-back {
+        color: blueviolet;
+        background-color: white;
+        margin: 2px;
+        padding: 2px;
+    }
+
+    canvas {
         border: 2px solid black;
     }
-    .component{
+
+    .component {
         display: flex;
         flex-flow: row wrap;
         justify-content: space-between;
         width: 100%;
         height: 100%;
     }
-    .icons{
+
+    .icons {
         width: 20%;
         height: 70%;
     }
-    .container-icons{
+
+    .container-icons {
         display: flex;
         align-items: center;
         overflow: scroll;
     }
-    .image{
+
+    .image {
         border-radius: 50%;
         width: 32px;
         height: 32px;
         object-fit: cover;
         overflow: hidden;
     }
-    .text-container{
+
+    .text-container {
         color: black;
         font-size: 12px;
         font-weight: 600;
@@ -464,5 +660,23 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+    }
+
+    .selected {
+        background-color: greenyellow;
+        border: greenyellow solid 1px;
+        border-radius: 16px;
+    }
+
+    .enregistrer-button {
+        width: 60%;
+        border: solid 1px;
+        border-radius: 16px;
+        padding: 5px;
+        background-color: cornflowerblue;
+        color: white;
+    }
+    .enregistrer-button:hover{
+        background-color: greenyellow;
     }
 </style>
