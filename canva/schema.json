@@ -25,6 +25,11 @@
         "key": "label"
       },
       {
+        "type": "dataProvider",
+        "label": "INFO POINTS",
+        "key": "icons"
+      },
+      {
         "type": "object",
         "properties": {
           "accessKeyId": {

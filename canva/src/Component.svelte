@@ -4,6 +4,7 @@
     export let imageUrl
     export let field
     export let label
+    export let icons
 
 
     let imgToUpload;
@@ -44,58 +45,9 @@
         unsubscribe?.();
     });
     //------------------------------------------------------
+    let infosPoints = [];
 
-    let infosPoints = [
-        {
-            "nom": "Aucune sélection",
-            "image": ""
-        },
-        {
-            "nom": "P : sondage pénétromètre dynamique",
-            "image": "p.png",
-            "diminutif": "P"
-        },
-        {
-            "nom": "Pr : sondage pressiométrique",
-            "image": "pr.png",
-            "diminutif": "Pr"
-        },
-        {
-            "nom": "Es : Evaluation SPT ou Tir sismique",
-            "image": "es.png",
-            "diminutif": "Es"
-        },
-        {
-            "nom": "T : sondage tarière",
-            "image": "t.png",
-            "diminutif": "T"
-        },
-        {
-            "nom": "SPM : sondage pelle mécanique ou reco",
-            "image": "spm.png",
-            "diminutif": "SPM"
-        },
-        {
-            "nom": "Piezzo : relevé piézométrique avec niveau stabilisé",
-            "image": "piezzo.png",
-            "diminutif": "Piez"
-        },
-        {
-            "nom": "Arbre repéré",
-            "image": "arbre.png",
-            "diminutif": "A"
-        },
-        {
-            "nom": "Puit repéré",
-            "image": "puit.png",
-            "diminutif": "Puit"
-        },
-        {
-            "nom": "Tracé libre",
-            "image": "puit.png",
-            "role": "trace"
-        }
-    ];
+
     let cameraOffset = {x: 0, y: 0};
     let cameraZoom = 1;
     let MAX_ZOOM = 5;
@@ -124,7 +76,11 @@
 
     let img = new Image();
     let ctx;
+
+
     onMount(() => {
+
+
         ctx = canvas.getContext('2d');
         img.src = imageUrl;
         img.crossOrigin = "anonymous";
@@ -142,6 +98,8 @@
     });
 
     function majPositionImage() {
+        console.log(field);
+        console.log(icons.rows)
         let ratioCanvas = canvas.width / canvas.height;
         let ratioImg = img.width / img.height;
         ctx.canvas.width = img.width * cameraZoom;
@@ -287,8 +245,9 @@
 
         //Ajout de l'image
         let image = new Image();
-        image.src = "https://placekitten.com/640/360";//"src/icones-ope/" + infosPoints[type].image;
-        image.crossOrigin = "anonymous";
+
+        image.src = icons.rows[type].image_first//"https://placekitten.com/640/360";//"icones-ope/" + infosPoints[type].image;//
+            console.log(image);
         image.onload = () => {
             //this.canvas.nativeElement.width = img.width;
             //this.canvas.nativeElement.height = img.height;
@@ -302,8 +261,10 @@
 
             pointsEnregistres.push(point);
             selectionPoint = 0;
+
             majPositionImage();
         }
+        console.log(image)
     }
 
     function onPointerMove(e) {
@@ -414,7 +375,7 @@
 
     function getNomPoint(index) {
         let point = pointsEnregistres[index];
-        return infosPoints[point.type].diminutif + getNumeroPoint(point.type, index);
+        return icons.rows[point.type].diminutif + getNumeroPoint(point.type, index);
     }
 
     function getNumeroPoint(type, index) {
@@ -434,8 +395,8 @@
     function choixPrelevement(index) {
         console.log("touché");
         selectionPoint = index;
-        if (infosPoints[index]['role'] !== undefined) {
-            if (infosPoints[index]['role'] === 'trace') {
+        if (!icons.rows[index].role) {
+            if (icons.rows[index].role === 'trace') {
                 traceLibre = true;
             }
         } else {
@@ -537,17 +498,23 @@
             {label || " "}
         </label>
         <div class="icons">
-            {#each infosPoints as icon, index}
-                <div on:click={() => choixPrelevement(index)}
-                     class="container-icons {selectionPoint === index? 'selected': ''}">
-                    <div>
-                        <img src="{imageUrl}" alt="icon" class="image" style="height:32px;width:32px;">
+            {#if icons}
+                {#each icons.rows as icon, index}
+                    <div on:click={() => choixPrelevement(index)}
+                         class="container-icons {selectionPoint === index? 'selected': ''}">
+                        <div>
+                            {#if icon.image_first}
+                                <img src={icon.image_first} alt="icon"
+                                     class="image" style="height:32px;width:32px;">
+                            {/if}
+                        </div>
+                        <div class="text-container">
+                            <span>{icon.nom}</span>
+                        </div>
                     </div>
-                    <div class="text-container">
-                        <span>{icon['nom']}</span>
-                    </div>
-                </div>
-            {/each}
+
+                {/each}
+            {/if}
             <button class="enregistrer-button" on:click={() => enregistrerImg()}>Enregistrer modifications</button>
         </div>
 
@@ -555,17 +522,18 @@
         <canvas bind:this={canvas}/>
     {/if}
     {#if imgToUpload}
-    <div>
-        <img src={imgToUpload.src}>
-    </div>
-        {/if}
+        <div>
+            <img src={imgToUpload.src}>
+        </div>
+    {/if}
 </div>
 
 <style>
-    label{
+    label {
         width: 100%;
         white-space: nowrap;
     }
+
     .placeholder {
         color: var(--spectrum-global-color-gray-600);
     }
@@ -676,7 +644,8 @@
         background-color: cornflowerblue;
         color: white;
     }
-    .enregistrer-button:hover{
+
+    .enregistrer-button:hover {
         background-color: greenyellow;
     }
 </style>
