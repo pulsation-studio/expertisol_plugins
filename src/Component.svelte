@@ -1,6 +1,8 @@
 <script>
     import {getContext, onMount, onDestroy} from "svelte"
 
+    import AWS from "aws-sdk";
+
     export let imageUrl
     export let field
     export let label
@@ -44,7 +46,6 @@
         fieldApi?.deregister();
         unsubscribe?.();
     });
-    const AWS = require("aws-sdk");
     const s3 = new AWS.S3();
     const params = {
         Bucket: field,
