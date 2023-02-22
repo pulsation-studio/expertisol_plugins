@@ -50,10 +50,13 @@
     const params = {
         Bucket: field,
     }
-
+    let data;
     s3.listObjects(params, function(err,data) {
         if (err) console.log(err,err.stack);
-        else console.log(data.Contents);
+        else {
+            data = data
+            console.log(data.Contents);
+        }
     })
     //------------------------------------------------------
     let infosPoints = [];
@@ -109,6 +112,7 @@
     });
 
     function majPositionImage() {
+        console.log(`s3 connexion: ${data}`)
         console.log(field);
         console.log(icons.rows)
         let ratioCanvas = canvas.width / canvas.height;
