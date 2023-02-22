@@ -29,3 +29,4 @@ budi plugins --watch
 #### Select the dataSourceS3 you want to use in ``DATASOURCE`` option
 #### Select your dataProvider in ``INFOS POINTS`` option
 #### Select your database in dataProvider ``Data`` option
+#### Sort Column ``diminutif`` ascending to be sure ``aucune sélection`` row is first

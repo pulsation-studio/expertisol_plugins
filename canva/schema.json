@@ -28,29 +28,7 @@
         "type": "dataProvider",
         "label": "INFO POINTS",
         "key": "icons"
-      },
-      {
-        "type": "object",
-        "properties": {
-          "accessKeyId": {
-            "type": "string",
-            "title": "Access Key ID"
-          },
-          "secretAccessKey": {
-            "type": "string",
-            "title": "Secret Access Key"
-          },
-          "region": {
-            "type": "string",
-            "title": "Region"
-          },
-          "bucket": {
-            "type": "string",
-            "title": "Bucket Name"
-          }
-        }
       }
-
     ]
   }
 }
