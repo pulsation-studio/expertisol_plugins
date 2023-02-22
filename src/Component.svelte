@@ -1,8 +1,6 @@
 <script>
     import {getContext, onMount, onDestroy} from "svelte"
 
-    import AWS from "aws-sdk";
-
     export let imageUrl
     export let field
     export let label
@@ -46,15 +44,6 @@
         fieldApi?.deregister();
         unsubscribe?.();
     });
-    const s3 = new AWS.S3();
-    const params = {
-        Bucket: field,
-    }
-
-    s3.listObjects(params, function(err,data) {
-        if (err) console.log(err,err.stack);
-        else console.log(data.Contents);
-    })
     //------------------------------------------------------
     let infosPoints = [];
 
