@@ -98,7 +98,7 @@
     });
 
     function majPositionImage() {
-        console.log(field);
+        console.dir(field);
         console.log(icons.rows)
         let ratioCanvas = canvas.width / canvas.height;
         let ratioImg = img.width / img.height;
