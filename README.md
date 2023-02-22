@@ -18,3 +18,14 @@ You can also re-build everytime you make a change to your plugin with the comman
 budi plugins --watch
 ```
 
+## Make the plug in functionnal
+#### You have to create a database with these column names:
+
+| nom  | diminutif | role | image      |
+|------|-----------|------|------------|
+| text | text      | text | attachment |
+
+#### Put the component in a dataProvider, then this dataProvider in a form.
+#### Select the dataSourceS3 you want to use in ``DATASOURCE`` option
+#### Select your dataProvider in ``INFOS POINTS`` option
+#### Select your database in dataProvider ``Data`` option
