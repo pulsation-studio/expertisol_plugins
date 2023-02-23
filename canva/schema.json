@@ -11,7 +11,7 @@
         "type": "text",
         "key": "imageUrl",
         "label": "image URL",
-        "defaultValue": "https://placekitten.com/640/360"
+        "defaultValue": "https://dummyimage.com/640x360/fff/aaa"
       },
       {
         "type": "dataSource/s3",
