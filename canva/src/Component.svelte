@@ -588,6 +588,7 @@
 
     canvas {
         border: 2px solid black;
+        width: 70%;
     }
 
     .component {

@@ -473,20 +473,20 @@
 
 </script>
 
-<div className="component spectrum-Form-item" use:styleable={$component.styles}>
+<div class="component spectrum-Form-item" use:styleable={$component.styles}>
     {#if !formContext}
-        <div className="placeholder">Form components need to be wrapped in a form</div>
+        <div class="placeholder">Form components need to be wrapped in a form</div>
     {:else}
         {#if (showModal)}
-            <div className="modal">
-                <div className="modal-content">
-                    <div className="text-modal-div">
+            <div class="modal">
+                <div class="modal-content">
+                    <div class="text-modal-div">
                         <p>Point {getNomPoint(pointTouche)}</p>
                     </div>
-                    <div className="buttons-modal-div">
-                        <button className="supprimer" on:click={() => supprimerPoint(pointTouche)}>supprimer point
+                    <div class="buttons-modal-div">
+                        <button class="supprimer" on:click={() => supprimerPoint(pointTouche)}>supprimer point
                         </button>
-                        <button className="go-back" on:click={() => showModal=false}>revenir en arrière</button>
+                        <button class="go-back" on:click={() => showModal=false}>revenir en arrière</button>
                     </div>
                 </div>
             </div>
@@ -590,6 +590,7 @@
 
     canvas {
         border: 2px solid black;
+        width: 70%;
     }
 
     .component {
