@@ -4,14 +4,13 @@
   "description": "canva de cadastre",
   "license": "MIT",
   "svelte": "index.js",
-  "module": "dist/plugin.min.js",
+  "module": "/canva/dist/plugin.min.js",
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -cw"
   },
   "dependencies": {
     "@crownframework/svelte-error-boundary": "^1.0.3",
-    "aws-sdk": "^2.1320.0",
     "svelte": "^3.49.0"
   },
   "devDependencies": {

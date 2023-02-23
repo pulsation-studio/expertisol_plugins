@@ -1,6 +1,6 @@
 <script>
-    import {getContext, onMount, onDestroy} from "svelte"
 
+    import {getContext, onMount, onDestroy} from "svelte"
     export let imageUrl
     export let field
     export let label
@@ -44,16 +44,7 @@
         fieldApi?.deregister();
         unsubscribe?.();
     });
-    const AWS = require("aws-sdk");
-    const s3 = new AWS.S3();
-    const params = {
-        Bucket: field,
-    }
 
-    s3.listObjects(params, function(err,data) {
-        if (err) console.log(err,err.stack);
-        else console.log(data.Contents);
-    })
     //------------------------------------------------------
     let infosPoints = [];
 
@@ -108,8 +99,6 @@
     });
 
     function majPositionImage() {
-        console.dir(field);
-        console.log(icons.rows)
         let ratioCanvas = canvas.width / canvas.height;
         let ratioImg = img.width / img.height;
         ctx.canvas.width = img.width * cameraZoom;

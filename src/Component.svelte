@@ -1,7 +1,6 @@
 <script>
-    import {getContext, onMount, onDestroy} from "svelte"
 
-    import AWS from "aws-sdk";
+    import {getContext, onMount, onDestroy} from "svelte"
 
     export let imageUrl
     export let field
@@ -46,14 +45,7 @@
         fieldApi?.deregister();
         unsubscribe?.();
     });
-    const s3 = new AWS.S3();
-    const params = {
-        Bucket: field,
-    }
-    s3.listObjects(params, function(err,data) {
-        if (err) console.log(err,err.stack);
-        else console.log(data.Contents);
-    })
+
     //------------------------------------------------------
     let infosPoints = [];
 
@@ -108,8 +100,6 @@
     });
 
     function majPositionImage() {
-        console.log(field);
-        console.log(icons.rows)
         let ratioCanvas = canvas.width / canvas.height;
         let ratioImg = img.width / img.height;
         ctx.canvas.width = img.width * cameraZoom;
@@ -257,7 +247,7 @@
         let image = new Image();
 
         image.src = icons.rows[type].image_first//"https://placekitten.com/640/360";//"icones-ope/" + infosPoints[type].image;//
-            console.log(image);
+        console.log(image);
         image.onload = () => {
             //this.canvas.nativeElement.width = img.width;
             //this.canvas.nativeElement.height = img.height;
@@ -483,19 +473,20 @@
 
 </script>
 
-<div class="component spectrum-Form-item" use:styleable={$component.styles}>
+<div className="component spectrum-Form-item" use:styleable={$component.styles}>
     {#if !formContext}
-        <div class="placeholder">Form components need to be wrapped in a form</div>
+        <div className="placeholder">Form components need to be wrapped in a form</div>
     {:else}
         {#if (showModal)}
-            <div class="modal">
-                <div class="modal-content">
-                    <div class="text-modal-div">
+            <div className="modal">
+                <div className="modal-content">
+                    <div className="text-modal-div">
                         <p>Point {getNomPoint(pointTouche)}</p>
                     </div>
-                    <div class="buttons-modal-div">
-                        <button class="supprimer" on:click={() => supprimerPoint(pointTouche)}>supprimer point</button>
-                        <button class="go-back" on:click={() => showModal=false}>revenir en arrière</button>
+                    <div className="buttons-modal-div">
+                        <button className="supprimer" on:click={() => supprimerPoint(pointTouche)}>supprimer point
+                        </button>
+                        <button className="go-back" on:click={() => showModal=false}>revenir en arrière</button>
                     </div>
                 </div>
             </div>
