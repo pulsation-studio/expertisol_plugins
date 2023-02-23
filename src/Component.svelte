@@ -1,7 +1,6 @@
 <script>
 
     import {getContext, onMount, onDestroy} from "svelte"
-
     export let imageUrl
     export let field
     export let label
@@ -484,8 +483,7 @@
                         <p>Point {getNomPoint(pointTouche)}</p>
                     </div>
                     <div class="buttons-modal-div">
-                        <button class="supprimer" on:click={() => supprimerPoint(pointTouche)}>supprimer point
-                        </button>
+                        <button class="supprimer" on:click={() => supprimerPoint(pointTouche)}>supprimer point</button>
                         <button class="go-back" on:click={() => showModal=false}>revenir en arrière</button>
                     </div>
                 </div>
